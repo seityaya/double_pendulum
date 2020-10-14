@@ -1,6 +1,7 @@
 #ifndef DRAW_HPP
 #define DRAW_HPP
 
+
 #include <QGraphicsView>
 #include <QWidget>
 #include <QGraphicsView>
@@ -16,8 +17,7 @@
 #define DRAW_BORDER 0
 #define VALUE_TRACK false
 
-class DrawPendulum
-{
+class DrawPendulum{
 private:
     QGraphicsScene *p;
     QGraphicsScene *m1;

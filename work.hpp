@@ -1,7 +1,6 @@
 #ifndef WORK_HPP
 #define WORK_HPP
 
-#include "draw.hpp"
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -46,7 +45,7 @@ private slots:
     void on_p1_doubleSpinBox_valueChanged(double arg1);
     void on_p2_doubleSpinBox_valueChanged(double arg1);
     void on_save_lineEdit_cursorPositionChanged(int arg1, int arg2);
-    void on_checkBox_toggled(bool checked);
+    void on_log_pushButton_toggled(bool checked);
 };
 
 class Console{

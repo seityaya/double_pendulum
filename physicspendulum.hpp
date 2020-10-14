@@ -57,7 +57,7 @@ public:
 
     //группы
     void   save_calcul();
-    void   set_value (double l1, double l2, double m1, double m2, double a1, double a2, double p1, double p2, double g, double h, double ss);
+    void   set_value (double l1, double l2, double m1, double m2, double a1, double a2, double p1, double p2, double g, double h, bool ss);
     void   set_save(int x);
     int    get_save_num();
     void   set_ss (bool x);
@@ -155,12 +155,7 @@ public:
 
     //////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD:physicspendulum.hpp
     void   physicspendulum_run();
-=======
-    void   main_run();
-
->>>>>>> master:value.hpp
 private:
     void pendulum_single_i();
 

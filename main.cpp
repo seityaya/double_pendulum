@@ -1,6 +1,7 @@
 #include "draw.hpp"
 #include "work.hpp"
 #include "physicspendulum.hpp"
+
 #include <QApplication>
 
 PhysicsPendulum GP;

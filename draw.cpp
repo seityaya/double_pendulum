@@ -43,22 +43,22 @@ int DrawPendulum::get_p(){
 }
 
 int DrawPendulum::get_m1x(){
-    return (int)((GP.get_m1x()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m1x()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 int DrawPendulum::get_m1y(){
-    return (int)((GP.get_m1y()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m1y()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 int DrawPendulum::get_m2x(){
-    return (int)((GP.get_m2x()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m2x()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 int DrawPendulum::get_m2y(){
-    return (int)((GP.get_m2y()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m2y()*(DRAW_L_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 int DrawPendulum::get_m1(){
-    return (int)((GP.get_m1()*(DRAW_M_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m1()*(DRAW_M_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 int DrawPendulum::get_m2(){
-    return (int)((GP.get_m2()*(DRAW_M_MAX-DRAW_M_MIN))+DRAW_M_MIN);
+    return static_cast <int>((GP.get_m2()*(DRAW_M_MAX-DRAW_M_MIN))+DRAW_M_MIN);
 }
 void DrawPendulum::set_track(bool x) {
     treck = x;

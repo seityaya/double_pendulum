@@ -1,7 +1,9 @@
 #include "work.hpp"
+#include "draw.hpp"
 #include "ui_window.h"
 #include "physicspendulum.hpp"
 
+#include <stdio.h>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
@@ -22,8 +24,8 @@ extern DrawPendulum GD;
 
 Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     ui->setupUi(this);
-    this->resize(800, 695);
-    this->setFixedSize(800, 695);
+    this->resize(920, 695);
+    this->setFixedSize(920, 695);
     this->setWindowIcon(QIcon(":physicspendulum.svg"));
 
     tmrValue = new QTimer(this);
@@ -39,14 +41,18 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
     connect(tmrCore, SIGNAL(timeout()), this, SLOT(updateCore()));
     tmrCore->start();
 
-    scene = new QGraphicsScene(this);
     track = new QGraphicsScene(this);
+    scene = new QGraphicsScene(this);
 
     ui->graphicsView->setScene(track);
     ui->graphicsView->setScene(scene);
+
     track->setBackgroundBrush(QBrush(QColor(1,  1,  1, 0)));
-    scene->setSceneRect(-249, -249, 498, 498);
+    scene->setBackgroundBrush(QBrush(QColor(1,  1,  1, 0)));
+
     track->setSceneRect(-249, -249, 498, 498);
+    scene->setSceneRect(-249, -249, 498, 498);
+
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -89,13 +95,18 @@ void Widget::updateDraw(){
     track->addEllipse(static_cast<int>(GD.get_m2x()-1), static_cast<int>(GD.get_m2y()-1), 2, 2, QPen(QColor(245, 0, 0)), QBrush(QColor(245, 0, 0)));
 
     if (GP.get_sspoint() && GP.get_output()){
-        ui->textEdit->append(QString("%0::%1 %2:%3 %4:%5 %6:%7 %8::%9+%10=%11:%12")  //append  -- setText
-                             .arg(GP.get_frame(), 0, 'f', 0)
-                             .arg(GP.get_l1(), 0, 'f', 2).arg(GP.get_l2(), 0, 'f', 2)
-                             .arg(GP.get_m1(), 0, 'f', 2).arg(GP.get_m2(), 0, 'f', 2)
-                             .arg(GP.get_a1_deg(), 0, 'f', 2).arg(GP.get_a2_deg(), 0, 'f', 2)
-                             .arg(GP.get_p1(), 0, 'f', 2).arg(GP.get_p2(), 0, 'f', 2)
-                             .arg(GP.get_Ep(), 0, 'f', 2).arg(GP.get_Ek(), 0, 'f', 2).arg(GP.get_Es(), 0, 'f', 2));
+        char mas[300];
+        sprintf(mas, "F:%5.0f | l:%.2f %.2f m:%.2f %.2f a:% 4.2f % 4.2f p:% 4.2f % 4.2f | E:% 4.2f + % 4.2f = % 4.2f | g:% 3.2f h:% 1.4f",
+                GP.get_frame(),
+                GP.get_l1(), GP.get_l2(),
+                GP.get_m1(), GP.get_m2(),
+                GP.get_a1_deg(), GP.get_a2_deg(),
+                GP.get_p1(), GP.get_p2(),
+                GP.get_Ep(), GP.get_Ek(), GP.get_Es(),
+                GP.get_g(), GP.get_h());
+
+        ui->textEdit->append(QString(mas));
+
     }
 }
 
@@ -116,13 +127,13 @@ void Widget::on_fps_doubleSpinBox_valueChanged(double arg1)                   { 
 void Widget::on_h_doubleSpinBox_valueChanged(double arg1)                     { GP.set_h(arg1);          updateValue();updateDraw();    }
 void Widget::on_track_pushButton_toggled(bool checked)                        { GD.set_track(checked);   updateValue();updateDraw();  ui->track_pushButton->setDown(GD.get_track());    }
 void Widget::on_start_pushButton_toggled(bool checked)                        { GP.set_ss(checked);      updateValue();updateDraw(); GP.save_calcul(); ui->start_pushButton->setDown(GP.get_sspoint()); }
-void Widget::on_reset_pushButton_clicked()                                    { GP.set_reset();          updateValue();updateDraw(); ui->textEdit->setText(" ");  }
+void Widget::on_reset_pushButton_clicked()                                    { GP.set_reset();          updateValue();updateDraw(); ui->textEdit->setText(" ");  track->clear(); }
 void Widget::on_save_n_pushButton_clicked()                                   { GP.set_save(GP.get_save_num()-1);  updateValue();updateDraw();    }
-void Widget::on_save_lineEdit_cursorPositionChanged(int arg1, int arg2)       { GP.set_save(GP.get_save_num()+0);  updateValue();updateDraw();              }
+void Widget::on_save_lineEdit_cursorPositionChanged(int arg1, int arg2)       { GP.set_save(GP.get_save_num()+0);  updateValue();updateDraw();    Q_UNUSED(arg1);  Q_UNUSED(arg2); }
 void Widget::on_save_p_pushButton_clicked()                                   { GP.set_save(GP.get_save_num()+1);  updateValue();updateDraw();    }
 void Widget::on_random_pushButton_clicked()                                   { GP.set_random();                   updateValue();updateDraw();    }
 void Widget::on_autor_pushButton_clicked()                                    { QMessageBox::information(this, "Autor/Автор", " Terlekchi Seityagiya Amedovich \n Терлекчи Сеитягия Амедович \n 17-30 / 06 / 2019 \n seityaya@ukr.net");}
-void Widget::on_checkBox_toggled(bool checked)                                { GP.set_output(checked);                                  }
+void Widget::on_log_pushButton_toggled(bool checked)                                { GP.set_output(checked);                                  }
 
 
 Console::Console(){}
@@ -138,16 +149,11 @@ void Console::show(){
     double p2 = 0;
     double g  = 9.8;
     double h  = 0.0001;
-    double ss = 1;
+    bool ss = 1;
     GP.set_value(l1, l2, m1, m2, a1, a2, p1, p2, g, h, ss);
     GP.save_calcul();
     while(1){
-<<<<<<< HEAD
-        GP.physicspendulum_run();
-=======
-        GP.main_run();
-        GP.print_value();
->>>>>>> master
+    GP.physicspendulum_run();
     }
 }
 
